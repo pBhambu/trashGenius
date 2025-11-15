@@ -1,8 +1,20 @@
 html {
+  height: 100%;
+  background: #010a1d;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+}
+
+body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+  overscroll-behavior: none;
 }
 
 :root {
@@ -18,15 +30,37 @@ html {
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  /* Simple dark background */
-  background: #020617;
+  position: relative;
+  overflow-x: hidden;
   color: var(--fg);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   scroll-behavior: smooth;
+  background: transparent;
+  overscroll-behavior: none;
+}
+
+/* Ocean background layer - scrolls with content */
+.ocean-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  overflow-x: hidden;
+  min-height: 100vh;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    #0096c7 0%,
+    #0077b6 15%,
+    #023e8a 30%,
+    #022b5c 45%,
+    #011a3a 60%,
+    #010a1d 80%,
+    #010a1d 100%
+  );
+  background-attachment: scroll;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  animation: gentleWave 20s ease-in-out infinite alternate;
 }
 
 .page-content {
@@ -99,7 +133,7 @@ body {
 }
 
 .hero-background {
-  position: fixed;
+  position: absolute; /* fixed to viewport; motion is independent of scroll */
   inset: 0;
   overflow: hidden;
   z-index: 0; /* behind content */
@@ -113,21 +147,32 @@ body {
   z-index: 1; /* above bubbles, below content */
 }
 
+.bubble-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  pointer-events: none;
+  z-index: 1; /* above background, below content */
+}
+
 /* Bubbles: rise from bottom of the screen to the top */
 .bubble {
-  position: absolute;
-  bottom: -80px;
+  position: fixed; /* fixed to viewport; motion is independent of scroll */
+  bottom: -20px;
   width: 14px;
   height: 14px;
   border-radius: 999px;
   border: 1px solid rgba(226, 243, 255, 0.7);
   background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), transparent 60%);
   box-shadow: 0 0 12px rgba(148, 197, 255, 0.45);
-  opacity: 0.8;
+  opacity: 0;
   animation: bubble-rise linear infinite;
+  will-change: transform, opacity;
 }
 
-.bubble-1 { left: 15%; animation-duration: 18s; animation-delay: 0s; }
+.bubble-1 { left: 15%; width: 14px; height: 14px; animation-duration: 18s; animation-delay: 0s; }
 .bubble-2 { left: 35%; width: 10px; height: 10px; animation-duration: 14s; animation-delay: 3s; }
 .bubble-3 { left: 55%; width: 18px; height: 18px; animation-duration: 20s; animation-delay: 6s; }
 .bubble-4 { left: 72%; width: 12px; height: 12px; animation-duration: 16s; animation-delay: 2s; }
@@ -136,14 +181,17 @@ body {
 
 @keyframes bubble-rise {
   0% {
-    transform: translate3d(0, 0, 0) scale(0.9);
+    transform: translateY(0) scale(0.9);
     opacity: 0;
   }
-  15% {
-    opacity: 0.9;
+  5% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 0.8;
   }
   100% {
-    transform: translate3d(0, -120vh, 0) scale(1.15);
+    transform: translateY(calc(-100vh - 20px)) scale(1.15);
     opacity: 0;
   }
 }
@@ -164,6 +212,10 @@ body {
   opacity: 0.95;
   will-change: transform;
   transform-origin: 50% 50%;
+}
+
+.gif-fish--shrimp {
+  background-image: url("./image/pngtree-sea-pink-shrimp-png-image_10213945.png");
 }
 
 /* Fish */
@@ -205,6 +257,18 @@ body {
 .fish-1 { top: 30%; left: -60px; animation-duration: 32s; animation-delay: 0s; }
 .fish-2 { top: 55%; left: -80px; animation-duration: 26s; animation-delay: 5s; }
 .fish-3 { top: 70%; left: -50px; animation-duration: 30s; animation-delay: 9s; }
+
+@keyframes gentleWave {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 2%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
 
 @keyframes fish-swim {
   0% {
