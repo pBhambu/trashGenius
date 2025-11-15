@@ -247,18 +247,41 @@ async function loadDataAndRender() {
       heatPoints.push([lat, lng, intensity]);
     });
 
-    L.heatLayer(heatPoints, {
-      radius: 28,
-      blur: 18,
-      maxZoom: 6,
-      minOpacity: 0.35,
-      gradient: {
-        0.0: '#1a2a3a',
-        0.3: '#00e0ff',
-        0.6: '#ffb347',
-        1.0: '#ff4b81'
+    heatPoints.forEach(([lat, lng, intensity]) => {
+      // Map intensity to much larger radius for better visibility
+      const baseRadius = 15; // Minimum radius
+      const maxRadius = 80; // Maximum radius
+      const radius = baseRadius + (intensity * (maxRadius - baseRadius));
+      
+      // Better color scaling with more distinct colors
+      let color, strokeColor;
+      
+      if (intensity < 0.2) {
+        color = '#0f4c75'; // Dark blue
+        strokeColor = '#1e6091';
+      } else if (intensity < 0.4) {
+        color = '#3282b8'; // Medium blue
+        strokeColor = '#4a9eff';
+      } else if (intensity < 0.6) {
+        color = '#00d4ff'; // Cyan
+        strokeColor = '#33ddff';
+      } else if (intensity < 0.8) {
+        color = '#ffb347'; // Orange
+        strokeColor = '#ffc266';
+      } else {
+        color = '#ff4757'; // Red
+        strokeColor = '#ff6b7a';
       }
-    }).addTo(map);
+      
+      L.circle([lat, lng], {
+        radius: radius * 1000, // Convert to meters for Leaflet
+        fillColor: color,
+        color: strokeColor,
+        weight: 3,
+        opacity: 0.9,
+        fillOpacity: 0.7
+      }).addTo(map);
+    });
 
     setStatus('Data loaded & visualization rendered', 'ok');
     setTimeout(() => {

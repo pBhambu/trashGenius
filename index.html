@@ -27,9 +27,6 @@
         <p class="hero-subtitle">
           See how plastic travels through our oceans — in real time.
         </p>
-        <div class="hero-actions">
-          <a href="./map.html" class="hero-cta">Dive into the data. Explore the map now.</a>
-        </div>
       </div>
     </header>
     <main class="page-content">
@@ -84,7 +81,29 @@
       <section class="content-section content-section--cta">
         <h2>Ready to explore?</h2>
         <p class="content-cta-text">See the flow. Understand the impact. Make a change.</p>
-        <a href="./map.html" class="hero-cta content-cta">Open the live map and watch the story unfold.</a>
+        <div class="game-mode-selection">
+          <a href="./map.html" class="mode-card mode-card--map">
+            <div class="mode-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                <line x1="8" y1="2" x2="8" y2="18"></line>
+                <line x1="16" y1="6" x2="16" y2="22"></line>
+              </svg>
+            </div>
+            <h3 class="mode-title">Data Explorer</h3>
+            <p class="mode-description">Interactive map showing real ocean plastic pollution data with detailed visualizations and current patterns.</p>
+          </a>
+          <button class="mode-card mode-card--game" disabled>
+            <div class="mode-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="10,8 16,12 10,16 10,8"></polygon>
+              </svg>
+            </div>
+            <h3 class="mode-title">Trivia Game</h3>
+            <p class="mode-description">Educational game experience to learn about ocean conservation through interactive challenges. [Coming Soon]</p>
+          </button>
+        </div>
       </section>
     </main>
     <script>

@@ -79,6 +79,88 @@ body {
   margin-top: 0.3rem;
 }
 
+.game-mode-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  color: var(--fg);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.mode-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--accent);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(52, 211, 153, 0.2);
+}
+
+.mode-card--game {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.mode-card--game:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.mode-icon {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #38bdf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mode-card--game .mode-icon {
+  background: linear-gradient(135deg, #64748b, #475569);
+}
+
+.mode-icon svg {
+  color: #021014;
+}
+
+.mode-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+}
+
+.mode-card--map .mode-title {
+  color: var(--accent);
+}
+
+.mode-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.85;
+  margin: 0;
+  max-width: 280px;
+}
+
 /* Hero / landing section */
 .hero {
   position: relative;
@@ -288,7 +370,7 @@ body {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.9rem 1.5rem;
+  gap: 1rem;
 }
 
 .hero-cta {
@@ -311,6 +393,23 @@ body {
   transform: translateY(-1px);
   filter: brightness(1.05);
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+}
+
+.cta-icon {
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.hero-cta--game {
+  background: linear-gradient(135deg, #64748b, #475569);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.hero-cta--game:hover {
+  transform: none;
+  filter: none;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 .hero-hint {
@@ -468,6 +567,37 @@ body {
   font-weight: 600;
 }
 
+.back-button {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.8rem;
+  background: radial-gradient(circle at top, rgba(5, 8, 22, 0.95), rgba(3, 9, 25, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  color: var(--accent);
+}
+
+.back-icon {
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .overlay {
     inset: 0.75rem 0.75rem auto;
@@ -489,4 +619,39 @@ body {
     left: 0.75rem;
     bottom: 0.75rem;
   }
+
+  .back-button {
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+
+  .game-mode-selection {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .mode-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .mode-title {
+    font-size: 1.3rem;
+  }
+
+  .mode-description {
+    font-size: 0.9rem;
+  }
+}
+
+.map-section.is-visible {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 900;        /* add this */
+}
+
+.overlay,
+.back-button {
+  pointer-events: auto;
+  z-index: 2000;       /* raise them above everything */
 }
