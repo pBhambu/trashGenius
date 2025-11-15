@@ -15,6 +15,10 @@
         <div class="bubble bubble-4"></div>
         <div class="bubble bubble-5"></div>
         <div class="bubble bubble-6"></div>
+        <div class="gif-fish gif-fish-1"></div>
+        <div class="gif-fish gif-fish-2"></div>
+        <div class="gif-fish gif-fish-3"></div>
+        <div class="gif-fish gif-fish-4"></div>
       </div>
 
       <div class="hero-inner">
@@ -83,5 +87,122 @@
         <a href="./map.html" class="hero-cta content-cta">Open the live map and watch the story unfold.</a>
       </section>
     </main>
+    <script>
+      // Free-swimming fish animation independent of scroll.
+      (function () {
+        const fishNodes = Array.from(document.querySelectorAll('.gif-fish'));
+        if (!fishNodes.length) return;
+
+        const maxFish = 4;
+        const fishes = fishNodes.slice(0, maxFish).map((el) => ({ el }));
+
+        function resetFish(fish) {
+          const worldHeight = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight
+          );
+          const worldWidth = window.innerWidth + 300; // swim a bit off-screen
+
+          fish.x = Math.random() * worldWidth;
+          fish.y = Math.random() * (worldHeight - 200);
+
+          const speed = 40 + Math.random() * 60; // px per second
+          const angle = Math.random() * Math.PI * 2;
+          fish.vx = Math.cos(angle) * speed;
+          fish.vy = Math.sin(angle) * speed * 0.6; // slightly flatter paths
+        }
+
+        fishes.forEach(resetFish);
+
+        let lastTime = performance.now();
+
+        function tick(now) {
+          const dt = Math.min((now - lastTime) / 1000, 0.05); // clamp for safety
+          lastTime = now;
+
+          const scrollY = window.scrollY || window.pageYOffset || 0;
+          const worldHeight = Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight
+          );
+          const worldWidth = window.innerWidth + 300;
+
+          // Separation: steer fish away from each other if they get too close.
+          const separationRadius = 160; // pixels
+          const separationStrength = 40; // how strongly they push apart
+
+          for (let i = 0; i < fishes.length; i++) {
+            for (let j = i + 1; j < fishes.length; j++) {
+              const a = fishes[i];
+              const b = fishes[j];
+              const dx = a.x - b.x;
+              const dy = a.y - b.y;
+              const distSq = dx * dx + dy * dy;
+              if (!distSq) continue;
+              const dist = Math.sqrt(distSq);
+              if (dist < separationRadius) {
+                const overlap = separationRadius - dist;
+                const nx = dx / dist;
+                const ny = dy / dist;
+
+                // Adjust velocities slightly away from each other.
+                const force = (separationStrength * overlap) / separationRadius;
+                a.vx += nx * force;
+                a.vy += ny * force * 0.6;
+                b.vx -= nx * force;
+                b.vy -= ny * force * 0.6;
+              }
+            }
+          }
+
+          fishes.forEach((fish) => {
+            fish.x += fish.vx * dt;
+            fish.y += fish.vy * dt;
+
+            const marginX = 150;
+            const minY = 0;
+            const maxY = worldHeight - 200;
+
+            // Horizontal bounce / respawn
+            if (fish.x < -marginX || fish.x > worldWidth) {
+              resetFish(fish);
+            }
+
+            // Vertical bounds with gentle bounce
+            if (fish.y < minY) {
+              fish.y = minY;
+              fish.vy = Math.abs(fish.vy);
+            } else if (fish.y > maxY) {
+              fish.y = maxY;
+              fish.vy = -Math.abs(fish.vy);
+            }
+
+            // Clamp overall speed so fish don't go too fast after steering.
+            const speed = Math.hypot(fish.vx, fish.vy);
+            const maxSpeed = 140;
+            if (speed > maxSpeed && speed > 0) {
+              const scale = maxSpeed / speed;
+              fish.vx *= scale;
+              fish.vy *= scale;
+            }
+
+            // Facing direction: rotate to match velocity angle.
+            // Base image faces left (180deg), so subtract 180deg to align.
+            const angleRad = Math.atan2(fish.vy, fish.vx);
+            const angleDeg = (angleRad * 180) / Math.PI;
+            const rotation = angleDeg - 180;
+            const screenY = fish.y - scrollY;
+            fish.el.style.transform = `translate(${fish.x}px, ${screenY}px) rotate(${rotation}deg)`;
+          });
+
+          requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame((t) => {
+          lastTime = t;
+          tick(t);
+        });
+      })();
+    </script>
   </body>
 </html>

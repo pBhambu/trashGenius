@@ -117,7 +117,6 @@ if (heroEl) {
     const progress = Math.min(Math.max(y / vh, 0), 1);
     const opacity = 1 - progress;
     heroEl.style.opacity = opacity.toString();
-    heroEl.style.transform = `translateY(${progress * -16}px)`;
 
     // Toggle scroll-wheel zoom on the map: disabled on hero, enabled once
     // the user has scrolled at least one full screen height.

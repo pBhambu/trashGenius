@@ -20,6 +20,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  /* Simple dark background */
   background: #020617;
   color: var(--fg);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -86,7 +87,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 3.5rem 1.5rem 4.5rem;
-  background: radial-gradient(circle at top, #0b3b66 0, #020617 55%, #01010a 100%);
+  background: transparent; /* let the global ocean background show through */
   overflow: hidden;
 }
 
@@ -98,13 +99,21 @@ body {
 }
 
 .hero-background {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
-  z-index: 1;
+  z-index: 0; /* behind content */
+  pointer-events: none;
 }
 
-/* Bubbles */
+.fish-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1; /* above bubbles, below content */
+}
+
+/* Bubbles: rise from bottom of the screen to the top */
 .bubble {
   position: absolute;
   bottom: -80px;
@@ -137,6 +146,24 @@ body {
     transform: translate3d(0, -120vh, 0) scale(1.15);
     opacity: 0;
   }
+}
+
+/* GIF fish that swim freely (JS-driven) */
+.gif-fish {
+  position: fixed; /* fixed to viewport; motion is independent of scroll */
+  top: 0;
+  left: 0;
+  width: 260px;
+  max-width: 40vw;
+  height: 150px;
+  background-image: url("./image/Adobe Express - file.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+  opacity: 0.95;
+  will-change: transform;
+  transform-origin: 50% 50%;
 }
 
 /* Fish */
