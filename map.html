@@ -20,14 +20,27 @@
         <div id="app">
           <div id="map"></div>
 
-          <div class="overlay">
-            <div class="overlay-pill">TRASHGENIUS</div>
-            <div class="overlay-title">Global Ocean Plastic Heatmap</div>
-            <div class="overlay-sub">Plastic waste entering the ocean — higher = hotter</div>
+          <!-- Map Options Bar -->
+          <div class="map-options">
+            <h3>🗺️ Map Layers</h3>
+            <div class="option-buttons">
+              <button id="heatmap-btn" class="option-btn active" data-layer="heatmap">
+                <span class="btn-icon">🔥</span>
+                <span class="btn-text">Heat Map</span>
+              </button>
+              <button id="facilities-btn" class="option-btn" data-layer="facilities">
+                <span class="btn-icon">🏭</span>
+                <span class="btn-text">Land Facilities</span>
+              </button>
+              <button id="currents-btn" class="option-btn" data-layer="currents">
+                <span class="btn-icon">🌊</span>
+                <span class="btn-text">Ocean Currents</span>
+              </button>
+            </div>
           </div>
 
           <div class="legend">
-            <div class="legend-title">Relative plastic input to oceans</div>
+            <div class="legend-title">Ocean Garbage Patch Concentration</div>
             <div class="legend-gradient"></div>
             <div class="legend-ticks">
               <span>Low</span>
@@ -35,7 +48,7 @@
               <span>High</span>
             </div>
             <div class="legend-source">
-              Data: Our World In Data — plastic waste emitted to the ocean per capita.
+              Enhanced with real-world data from NOAA NCEI, Our World in Data, and KAPSARC databases.
             </div>
           </div>
 
@@ -61,6 +74,9 @@
       integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
       crossorigin=""
     ></script>
+    
+    <!-- Leaflet.heat plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
     <!-- App logic -->
     <script src="./script.js"></script>

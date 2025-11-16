@@ -489,6 +489,7 @@ body {
   opacity: 0;
   transform: scale(1.03);
   transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  overflow: hidden;
 }
 
 .map-section.is-visible {
@@ -503,12 +504,13 @@ body {
 #app {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #map {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   filter: saturate(1.4) contrast(1.1);
 }
 
@@ -559,28 +561,28 @@ body {
   right: 1.25rem;
   bottom: 1.25rem;
   z-index: 1000;
-  padding: 0.9rem 1rem;
-  border-radius: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.7rem;
   background: radial-gradient(circle at top, rgba(5, 8, 22, 0.95), rgba(3, 9, 25, 0.94));
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(22px);
-  min-width: 180px;
+  min-width: 140px;
 }
 
 .legend-title {
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  margin-bottom: 0.55rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.4rem;
   color: rgba(229, 244, 255, 0.95);
 }
 
 .legend-gradient {
-  height: 10px;
+  height: 8px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #0f172a, #38bdf8, #facc6b, #fb7185);
-  margin-bottom: 0.55rem;
+  background: linear-gradient(90deg, rgba(30, 58, 138, 0.6), rgba(59, 130, 246, 0.7), rgba(6, 182, 212, 0.8), rgba(245, 158, 11, 0.9), rgba(239, 68, 68, 1.0), rgba(220, 38, 127, 1.0));
+  margin-bottom: 0.4rem;
   position: relative;
   overflow: hidden;
 }
@@ -588,15 +590,15 @@ body {
 .legend-ticks {
   display: flex;
   justify-content: space-between;
-  font-size: 0.66rem;
+  font-size: 0.6rem;
   opacity: 0.78;
 }
 
 .legend-source {
-  margin-top: 0.55rem;
-  font-size: 0.58rem;
+  margin-top: 0.4rem;
+  font-size: 0.52rem;
   opacity: 0.7;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 .status {
@@ -711,11 +713,632 @@ body {
 .map-section.is-visible {
   opacity: 1;
   transform: scale(1);
-  z-index: 900;        /* add this */
+  z-index: 900;
+}
+
+/* Prevent scrolling on map page and fix map boundaries */
+body:has(.map-section.is-visible) {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.map-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 900;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .overlay,
 .back-button {
   pointer-events: auto;
-  z-index: 2000;       /* raise them above everything */
+  z-index: 2000;
+}
+
+/* Garbage Patch Labels */
+.garbage-patch-label {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.patch-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.patch-marker:hover {
+  transform: scale(1.05);
+}
+
+.patch-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.1;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.8), 1px -1px 2px rgba(0, 0, 0, 0.8), -1px 1px 2px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+/* Popup styles */
+.patch-popup {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #1e293b;
+}
+
+.patch-popup h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.patch-popup p {
+  margin: 4px 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.patch-popup strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Enhanced popup styles for detailed information */
+.detailed-patch-popup .leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}
+
+.patch-details p {
+  margin: 6px 0;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.patch-details strong {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Heatmap info popup styles */
+.heatmap-info-popup .leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}
+
+.heatmap-popup h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.pollution-details p {
+  margin: 4px 0;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.pollution-details strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Pollution level indicators */
+.level-low { color: #10b981; font-weight: 600; }
+.level-lowmedium { color: #f59e0b; font-weight: 600; }
+.level-medium { color: #f97316; font-weight: 600; }
+.level-high { color: #ef4444; font-weight: 600; }
+.level-veryhigh { color: #dc2626; font-weight: 700; }
+
+.data-note {
+  margin-top: 8px;
+  padding: 4px 6px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 3px;
+  border-left: 2px solid #3b82f6;
+}
+
+.data-note small {
+  font-size: 9px;
+  color: #4b5563;
+  font-style: italic;
+}
+
+/* Learn More Button */
+.learn-more-container {
+  margin-top: 12px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 8px;
+}
+
+.learn-more-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.learn-more-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.learn-more-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Learn More Modal */
+.learn-more-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.learn-more-modal {
+  background: white;
+  border-radius: 12px;
+  max-width: 800px;
+  max-height: 90vh;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-content {
+  padding: 24px;
+  max-height: calc(90vh - 80px);
+  overflow-y: auto;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.modal-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.modal-section p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.modal-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 2px solid #e5e7eb;
+}
+
+.modal-footer p {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.modal-footer ul {
+  margin: 0;
+  padding-left: 16px;
+  list-style-type: disc;
+}
+
+.modal-footer li {
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+.modal-footer a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.modal-footer a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+  .learn-more-modal {
+    max-width: 95vw;
+    margin: 10px;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+  
+  .modal-header h2 {
+    font-size: 16px;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+}
+
+/* Land-based waste facility markers */
+.land-facility-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.facility-icon {
+  font-size: 18px;
+  text-align: center;
+  line-height: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  border: 2px solid #374151;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.facility-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Land facility popup styles */
+.land-facility-popup .leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}
+
+.facility-popup h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.facility-details p {
+  margin: 4px 0;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.facility-details strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Ocean current visualization styles */
+.ocean-current-line {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.ocean-current-line:hover {
+  opacity: 1 !important;
+}
+
+.current-arrow {
+  background: transparent !important;
+  border: none !important;
+  pointer-events: none;
+}
+
+.arrow-icon {
+  font-size: 12px;
+  color: #ffffff;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Ocean current popup styles */
+.ocean-current-popup .leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}
+
+.current-popup h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.current-details p {
+  margin: 4px 0;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.current-details strong {
+  font-weight: 600;
+  color: #374151;
+}
+
+.current-note {
+  margin-top: 8px;
+  padding: 6px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 4px;
+  border-left: 3px solid #3b82f6;
+}
+
+.current-note small {
+  color: #1e40af;
+  font-style: italic;
+}
+
+/* Map Options Bar */
+.map-options {
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  background: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 1000;
+  min-width: 200px;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.map-options:hover {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.map-options h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-align: center;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.map-options:hover h3 {
+  opacity: 1;
+}
+
+.option-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: left;
+  opacity: 0.8;
+}
+
+.map-options:hover .option-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.option-btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: rgba(0, 224, 255, 0.3);
+  color: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.option-btn.active {
+  background: linear-gradient(135deg, rgba(0, 224, 255, 0.3), rgba(0, 150, 255, 0.3));
+  border-color: rgba(0, 224, 255, 0.6);
+  color: #00e0ff;
+  box-shadow: 0 0 20px rgba(0, 224, 255, 0.3);
+  opacity: 1 !important;
+}
+
+.map-options:hover .option-btn.active {
+  background: linear-gradient(135deg, rgba(0, 224, 255, 0.2), rgba(0, 150, 255, 0.2));
+  border-color: rgba(0, 224, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 224, 255, 0.2);
+}
+
+.option-btn.active:hover {
+  background: linear-gradient(135deg, rgba(0, 224, 255, 0.3), rgba(0, 150, 255, 0.3));
+  border-color: rgba(0, 224, 255, 0.7);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.btn-text {
+  font-weight: 600;
+}
+
+/* Responsive adjustments for options bar */
+@media (max-width: 768px) {
+  .map-options {
+    top: 70px;
+    left: 10px;
+    right: 10px;
+    min-width: auto;
+    padding: 10px;
+  }
+  
+  .map-options h3 {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .option-buttons {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  
+  .option-btn {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 11px;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .btn-text {
+    font-size: 9px;
+    font-weight: 500;
+  }
+  
+  .btn-icon {
+    font-size: 16px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .map-options {
+    top: 60px;
+    left: 5px;
+    right: 5px;
+    padding: 8px;
+  }
+  
+  .btn-text {
+    display: none;
+  }
+  
+  .btn-icon {
+    font-size: 18px;
+    margin: 0 auto;
+  }
+  
+  .option-btn {
+    padding: 8px 4px;
+  }
+}
+
+/* Map Color Customization - Subtle theme matching */
+.leaflet-tile-pane {
+  filter: hue-rotate(15deg) saturate(0.7) brightness(0.9) contrast(1.1);
+  transition: filter 0.3s ease;
+}
+
+/* Enhance map background */
+#map {
+  background-color: #1a202c;
 }
