@@ -1,4 +1,5 @@
 // public/script.js
+//public
 // Cleaned-up trivia client script — all audio removed and references fixed.
 // Keeps original behaviour: lobby, join, chat, start, choices, timer, reveal, scoreboard, leaderboard (optional).
 
