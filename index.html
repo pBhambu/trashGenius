@@ -16,19 +16,23 @@
         <div class="bubble bubble-4"></div>
         <div class="bubble bubble-5"></div>
         <div class="bubble bubble-6"></div>
-        <div class="gif-fish gif-fish-1"></div>
         <div class="gif-fish gif-fish-2 gif-fish--shrimp"></div>
-        <div class="gif-fish gif-fish-3"></div>
         <div class="gif-fish gif-fish-4 gif-fish--shrimp"></div>
-        <div class="gif-fish gif-fish-5"></div>
         <div class="gif-fish gif-fish-6 gif-fish--shrimp"></div>
-        <div class="gif-fish gif-fish-7"></div>
         <div class="gif-fish gif-fish-8 gif-fish--shrimp"></div>
+        <div class="gif-fish gif-fish-1 gif-fish--grey"></div>
+        <div class="gif-fish gif-fish-3 gif-fish--grey"></div>
+        <div class="gif-fish gif-fish-5 gif-fish--orange"></div>
+        <div class="gif-fish gif-fish-7 gif-fish--orange"></div>
+        <div class="gif-fish gif-fish-9 gif-fish--plastic-bag"></div>
+        <div class="gif-fish gif-fish-10 gif-fish--plastic-bag"></div>
+        <div class="gif-fish gif-fish-11 gif-fish--plastic-bag"></div>
+        <div class="gif-fish gif-fish-12 gif-fish--plastic-bag"></div>
       </div>
 
       <div class="hero-inner">
-        <div class="hero-tag">TRASHGENIUS</div>
-        <h1 class="hero-title">See the true impact of plastic pollution on our oceans.</h1>
+        <h1 class="hero-main-title">TRASHGENIUS</h1>
+        <h2 class="hero-title">See the true impact of plastic pollution on our oceans.</h2>
         <p class="hero-subtitle">
           See how plastic travels through our oceans — in real time.
         </p>
@@ -38,32 +42,33 @@
       <section class="content-section">
         <h2>About the Project</h2>
         <p>
-          Plastic waste doesn’t disappear — it drifts. Currents carry billions of pieces of plastic
-          across the globe, concentrating them in islands, gyres, and coastlines. Our interactive
-          map turns complex ocean data into a clear, visual story that anyone can explore.
+          TrashGenius transforms complex ocean plastic pollution data into an interactive visual experience. 
+          Our platform combines real-world scientific datasets from NOAA, Our World in Data, and KAPSARC 
+          to show how plastic waste travels through ocean currents and accumulates in massive garbage patches.
         </p>
         <p>
-          With this tool, you can track how plastic pollution moves, where it accumulates, and how it
-          affects marine environments. Whether you're a student, researcher, or someone who cares
-          about the planet, this map helps you see the problem in a new way.
+          Explore three distinct visualization modes: heat maps showing pollution concentration hotspots, 
+          land-based facilities revealing pollution sources, and complete ocean current systems that transport 
+          debris across all five major oceanic gyres. Each layer provides unique insights backed by scientific research.
         </p>
       </section>
 
       <section class="content-section">
         <h2>How the Map Works</h2>
         <p>
-          Our map uses real scientific models, ocean-current data, and environmental research to
-          simulate the movement of plastic around the world.
+          Our interactive map features three distinct visualization layers that can be toggled with 
+          a single click. Each layer reveals different aspects of the global plastic pollution crisis 
+          using real scientific data and research.
         </p>
         <ul>
-          <li>Follow plastic as it travels through major ocean currents</li>
-          <li>See hotspots with the highest concentration</li>
-          <li>Understand seasonal and long-term patterns</li>
-          <li>Explore how human activity affects different regions</li>
+          <li><strong>Heat Map Layer:</strong> Visualize pollution concentration across all five major garbage patches with interactive hotspot details</li>
+          <li><strong>Land Facilities Layer:</strong> Explore waste treatment centers, landfills, and pollution sources from major cities worldwide</li>
+          <li><strong>Ocean Currents Layer:</strong> Follow complete gyre circulation patterns that transport plastic debris across ocean basins</li>
+          <li><strong>Interactive Elements:</strong> Click anywhere for detailed pollution data, facility information, or current strength analysis</li>
         </ul>
         <p>
-          The goal is simple: make the invisible data behind ocean pollution visible and easy to
-          understand.
+          Switch between layers instantly with our transparent toolbar to understand the complete 
+          plastic pollution ecosystem from source to accumulation.
         </p>
       </section>
 
@@ -96,7 +101,7 @@
               </svg>
             </div>
             <h3 class="mode-title">Data Explorer</h3>
-            <p class="mode-description">Interactive map showing real ocean plastic pollution data with detailed visualizations and current patterns.</p>
+            <p class="mode-description">Multi-layer interactive map with toggleable heat maps, land-based pollution sources, and complete ocean gyre systems. Features real-time data from NOAA, KAPSARC, and scientific research databases.</p>
           </a>
           <button class="mode-card mode-card--game" disabled>
             <div class="mode-icon">
@@ -117,7 +122,7 @@
         const fishNodes = Array.from(document.querySelectorAll('.gif-fish'));
         if (!fishNodes.length) return;
 
-        const maxFish = 8;
+        const maxFish = 12;
         const fishes = fishNodes.slice(0, maxFish).map((el) => ({ el }));
 
         function resetFish(fish) {
@@ -211,12 +216,12 @@
             }
 
             // Facing direction: rotate to match velocity angle.
-            // Base image faces left (180deg), so subtract 180deg to align.
+            // Base image faces right (0deg), so use angle directly.
             const angleRad = Math.atan2(fish.vy, fish.vx);
             const angleDeg = (angleRad * 180) / Math.PI;
-            const rotation = angleDeg - 180;
+            const rotation = angleDeg;
             const screenY = fish.y - scrollY;
-            const flipY = fish.vx > 0 ? -1 : 1; // flip vertically when moving right
+            const flipY = fish.vx < 0 ? -1 : 1; // flip vertically when moving left
             fish.el.style.transform = `translate(${fish.x}px, ${screenY}px) rotate(${rotation}deg) scaleY(${flipY})`;
           });
 
