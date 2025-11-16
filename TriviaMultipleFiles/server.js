@@ -1,7 +1,4 @@
-// -----------------------------
-// SERVER.JS — Multiplayer Trivia
-// -----------------------------
-
+// ===== SERVER.JS =====
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -11,153 +8,153 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve your public folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// Rooms data structure
-const rooms = {};
+const ROOMS = {}; // roomCode → {hostId, players, state, questionIndex}
 
-// Helper: Generate 4-digit room code
-function generateCode() {
-    return Math.floor(1000 + Math.random() * 9000).toString();
+// Generate room code
+function makeCode() {
+    return Math.random().toString(36).substring(2, 6).toUpperCase();
 }
 
-// -----------------------------
-// SOCKET.IO HANDLERS
-// -----------------------------
-io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+// ========== SOCKET.IO ==========
+io.on("connection", socket => {
 
-    // Create a room
+    // CREATE ROOM
     socket.on("create-room", (callback) => {
-        const code = generateCode();
-        rooms[code] = {
-            host: socket.id,
+        const code = makeCode();
+
+        ROOMS[code] = {
+            hostId: socket.id,
             players: {},
-            gameStarted: false,
-            currentQuestionIndex: 0,
-            timer: 0,
-            intervalId: null
+            state: "lobby",
+            questionIndex: 0,
+            questions: []
+        };
+
+        ROOMS[code].players[socket.id] = {
+            name: "Host",
+            score: 0,
+            choice: null
         };
 
         socket.join(code);
-        rooms[code].players[socket.id] = { name: "Host", score: 0 };
+        callback({ code, host: true });
 
-        callback({ status: "ok", code: code, host: true });
-        console.log("Room created:", code);
+        io.to(code).emit("player-list", ROOMS[code].players);
     });
 
-    // Join a room
-    socket.on("join-room", ({ code, name }, callback) => {
-        if (!rooms[code]) {
-            return callback({ status: "error", message: "Room does not exist." });
+
+    // JOIN ROOM
+    socket.on("join-room", (data, callback) => {
+        const { code, name } = data;
+
+        if (!ROOMS[code]) {
+            return callback({ status: "error", message: "Room does not exist" });
         }
 
-        if (rooms[code].gameStarted) {
-            return callback({ status: "error", message: "Game already started." });
-        }
+        ROOMS[code].players[socket.id] = {
+            name,
+            score: 0,
+            choice: null
+        };
 
         socket.join(code);
-        rooms[code].players[socket.id] = { name: name, score: 0 };
+        callback({ status: "ok", host: socket.id === ROOMS[code].hostId });
 
-        callback({ status: "ok", host: socket.id === rooms[code].host });
-
-        io.to(code).emit("player-list", rooms[code].players);
+        io.to(code).emit("player-list", ROOMS[code].players);
     });
+
 
     // HOST STARTS GAME
     socket.on("host-start-game", ({ code, questions }) => {
-        if (!rooms[code]) return;
-        if (socket.id !== rooms[code].host) return;
+        if (!ROOMS[code]) return;
 
-        rooms[code].gameStarted = true;
-        rooms[code].questions = questions;
-        rooms[code].currentQuestionIndex = 0;
+        ROOMS[code].questions = questions;
+        ROOMS[code].questionIndex = 0;
 
         startQuestion(code);
     });
 
-    // Handle answer submissions
+
+    // PLAYER ANSWERS
     socket.on("submit-answer", ({ code, choice }) => {
-        const room = rooms[code];
-        if (!room) return;
+        if (!ROOMS[code]) return;
+        if (!ROOMS[code].players[socket.id]) return;
 
-        const player = room.players[socket.id];
-        if (!player) return;
-
-        const question = room.questions[room.currentQuestionIndex];
-
-        if (choice === question.answer) {
-            player.score += 100; // +100 points for correct
-        }
+        ROOMS[code].players[socket.id].choice = choice;
     });
 
-    // Handle disconnect
+
+    // ON DISCONNECT
     socket.on("disconnect", () => {
-        console.log("User disconnected:", socket.id);
-
-        for (const code in rooms) {
-            if (rooms[code].players[socket.id]) {
-                delete rooms[code].players[socket.id];
-
-                io.to(code).emit("player-list", rooms[code].players);
-
-                // If host disconnects → destroy room
-                if (rooms[code].host === socket.id) {
-                    delete rooms[code];
-                    console.log("Room deleted:", code);
-                }
+        for (let code in ROOMS) {
+            if (ROOMS[code].players[socket.id]) {
+                delete ROOMS[code].players[socket.id];
+                io.to(code).emit("player-list", ROOMS[code].players);
             }
         }
     });
 });
 
-// -----------------------------
-// GAME LOGIC
-// -----------------------------
-
+// ========== GAME LOGIC ==========
 function startQuestion(code) {
-    const room = rooms[code];
+    const room = ROOMS[code];
     if (!room) return;
 
-    if (room.currentQuestionIndex >= room.questions.length) {
-        io.to(code).emit("game-over", room.players);
-        return;
+    const q = room.questions[room.questionIndex];
+
+    // reset choices
+    for (let p in room.players) {
+        room.players[p].choice = null;
     }
 
-    const question = room.questions[room.currentQuestionIndex];
-
-    // Reset timer
-    room.timer = 10;
-
     io.to(code).emit("show-question", {
-        question: question.question,
-        choices: question.choices,
-        index: room.currentQuestionIndex
+        question: q.question,
+        choices: q.choices
     });
 
-    // Timer loop
-    clearInterval(room.intervalId);
-    room.intervalId = setInterval(() => {
-        room.timer--;
-        io.to(code).emit("timer", room.timer);
+    let time = 10;
+    const timer = setInterval(() => {
+        time--;
+        io.to(code).emit("timer", time);
 
-        if (room.timer <= 0) {
-            clearInterval(room.intervalId);
-            io.to(code).emit("reveal-answer", question.answer);
-
-            setTimeout(() => {
-                room.currentQuestionIndex++;
-                startQuestion(code);
-            }, 3000);
+        if (time <= 0) {
+            clearInterval(timer);
+            revealAnswer(code);
         }
     }, 1000);
 }
 
-// -----------------------------
-// START SERVER
-// -----------------------------
-const PORT = 8080; // change if needed
+function revealAnswer(code) {
+    const room = ROOMS[code];
+    if (!room) return;
+
+    const q = room.questions[room.questionIndex];
+
+    // score update
+    for (let id in room.players) {
+        if (room.players[id].choice === q.answer) {
+            room.players[id].score += 100;
+        }
+    }
+
+    io.to(code).emit("reveal-answer", q.answer);
+
+    setTimeout(() => {
+        room.questionIndex++;
+
+        if (room.questionIndex >= room.questions.length) {
+            io.to(code).emit("game-over", room.players);
+        } else {
+            startQuestion(code);
+        }
+    }, 4000);
+}
+
+// ========== START SERVER ==========
+const PORT = 8080;
 server.listen(PORT, () => {
     console.log("Server running on http://localhost:" + PORT);
+    console.log("Your IP (for other computers):");
 });
