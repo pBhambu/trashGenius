@@ -57,6 +57,20 @@
             <span class="status-text" id="status-text">Loading latest plastic waste data…</span>
           </div>
 
+          <!-- City Search Bar -->
+          <div class="city-search-container">
+            <div class="search-input-wrapper">
+              <input 
+                type="text" 
+                id="city-search-input" 
+                placeholder="🔍 Search for a city..."
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <div class="search-dropdown" id="search-dropdown"></div>
+            </div>
+          </div>
+
           <a href="./index.html" class="back-button">
             <svg class="back-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m12 19-7-7 7-7"></path>
@@ -78,6 +92,9 @@
     <!-- Leaflet.heat plugin -->
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
+    <!-- Configuration (API keys) -->
+    <script src="./config.js"></script>
+    
     <!-- App logic -->
     <script src="./script.js"></script>
   </body>

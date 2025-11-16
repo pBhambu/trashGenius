@@ -1564,4 +1564,480 @@ function getStrengthLabel(strength) {
   return 'Weak';
 }
 
+const POPULAR_CITIES = [
+  { name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503, flag: "🇯🇵" },
+  { name: "Delhi", country: "India", lat: 28.7041, lng: 77.1025, flag: "🇮🇳" },
+  { name: "Shanghai", country: "China", lat: 31.2304, lng: 121.4737, flag: "🇨🇳" },
+  { name: "São Paulo", country: "Brazil", lat: -23.5505, lng: -46.6333, flag: "🇧🇷" },
+  { name: "Mexico City", country: "Mexico", lat: 19.4326, lng: -99.1332, flag: "🇲🇽" },
+  { name: "Cairo", country: "Egypt", lat: 30.0444, lng: 31.2357, flag: "🇪🇬" },
+  { name: "Mumbai", country: "India", lat: 19.0760, lng: 72.8777, flag: "🇮🇳" },
+  { name: "Beijing", country: "China", lat: 39.9042, lng: 116.4074, flag: "🇨🇳" },
+  { name: "Dhaka", country: "Bangladesh", lat: 23.8103, lng: 90.4125, flag: "🇧🇩" },
+  { name: "Osaka", country: "Japan", lat: 34.6937, lng: 135.5023, flag: "🇯🇵" },
+  { name: "New York", country: "United States", lat: 40.7128, lng: -74.0060, flag: "🇺🇸" },
+  { name: "Karachi", country: "Pakistan", lat: 24.8607, lng: 67.0011, flag: "🇵🇰" },
+  { name: "Buenos Aires", country: "Argentina", lat: -34.6118, lng: -58.3960, flag: "🇦🇷" },
+  { name: "Chongqing", country: "China", lat: 29.4316, lng: 106.9123, flag: "🇨🇳" },
+  { name: "Istanbul", country: "Turkey", lat: 41.0082, lng: 28.9784, flag: "🇹🇷" },
+  { name: "Kolkata", country: "India", lat: 22.5726, lng: 88.3639, flag: "🇮🇳" },
+  { name: "Manila", country: "Philippines", lat: 14.5995, lng: 120.9842, flag: "🇵🇭" },
+  { name: "Lagos", country: "Nigeria", lat: 6.5244, lng: 3.3792, flag: "🇳🇬" },
+  { name: "Rio de Janeiro", country: "Brazil", lat: -22.9068, lng: -43.1729, flag: "🇧🇷" },
+  { name: "Tianjin", country: "China", lat: 39.3434, lng: 117.3616, flag: "🇨🇳" },
+  { name: "Kinshasa", country: "DR Congo", lat: -4.4419, lng: 15.2663, flag: "🇨🇩" },
+  { name: "Guangzhou", country: "China", lat: 23.1291, lng: 113.2644, flag: "🇨🇳" },
+  { name: "Los Angeles", country: "United States", lat: 34.0522, lng: -118.2437, flag: "🇺🇸" },
+  { name: "Moscow", country: "Russia", lat: 55.7558, lng: 37.6173, flag: "🇷🇺" },
+  { name: "Shenzhen", country: "China", lat: 22.5431, lng: 114.0579, flag: "🇨🇳" },
+  { name: "Lahore", country: "Pakistan", lat: 31.4504, lng: 74.3587, flag: "🇵🇰" },
+  { name: "Bangalore", country: "India", lat: 12.9716, lng: 77.5946, flag: "🇮🇳" },
+  { name: "Paris", country: "France", lat: 48.8566, lng: 2.3522, flag: "🇫🇷" },
+  { name: "Bogotá", country: "Colombia", lat: 4.7110, lng: -74.0721, flag: "🇨🇴" },
+  { name: "Jakarta", country: "Indonesia", lat: -6.2088, lng: 106.8456, flag: "🇮🇩" },
+  { name: "Chennai", country: "India", lat: 13.0827, lng: 80.2707, flag: "🇮🇳" },
+  { name: "Lima", country: "Peru", lat: -12.0464, lng: -77.0428, flag: "🇵🇪" },
+  { name: "Bangkok", country: "Thailand", lat: 13.7563, lng: 100.5018, flag: "🇹🇭" },
+  { name: "Seoul", country: "South Korea", lat: 37.5665, lng: 126.9780, flag: "🇰🇷" },
+  { name: "Nagoya", country: "Japan", lat: 35.1815, lng: 136.9066, flag: "🇯🇵" },
+  { name: "Hyderabad", country: "India", lat: 17.3850, lng: 78.4867, flag: "🇮🇳" },
+  { name: "London", country: "United Kingdom", lat: 51.5074, lng: -0.1278, flag: "🇬🇧" },
+  { name: "Tehran", country: "Iran", lat: 35.6892, lng: 51.3890, flag: "🇮🇷" },
+  { name: "Chicago", country: "United States", lat: 41.8781, lng: -87.6298, flag: "🇺🇸" },
+  { name: "Chengdu", country: "China", lat: 30.5728, lng: 104.0668, flag: "🇨🇳" },
+  { name: "Nanjing", country: "China", lat: 32.0603, lng: 118.7969, flag: "🇨🇳" },
+  { name: "Wuhan", country: "China", lat: 30.5928, lng: 114.3055, flag: "🇨🇳" },
+  { name: "Ho Chi Minh City", country: "Vietnam", lat: 10.8231, lng: 106.6297, flag: "🇻🇳" },
+  { name: "Luanda", country: "Angola", lat: -8.8390, lng: 13.2894, flag: "🇦🇴" },
+  { name: "Ahmedabad", country: "India", lat: 23.0225, lng: 72.5714, flag: "🇮🇳" },
+  { name: "Kuala Lumpur", country: "Malaysia", lat: 3.1390, lng: 101.6869, flag: "🇲🇾" },
+  { name: "Xi'an", country: "China", lat: 34.3416, lng: 108.9398, flag: "🇨🇳" },
+  { name: "Hong Kong", country: "Hong Kong", lat: 22.3193, lng: 114.1694, flag: "🇭🇰" },
+  { name: "Dongguan", country: "China", lat: 23.0489, lng: 113.7447, flag: "🇨🇳" },
+  { name: "Hangzhou", country: "China", lat: 30.2741, lng: 120.1551, flag: "🇨🇳" },
+  { name: "Foshan", country: "China", lat: 23.0218, lng: 113.1219, flag: "🇨🇳" },
+  { name: "Shenyang", country: "China", lat: 41.8057, lng: 123.4315, flag: "🇨🇳" },
+  { name: "Riyadh", country: "Saudi Arabia", lat: 24.7136, lng: 46.6753, flag: "🇸🇦" },
+  { name: "Baghdad", country: "Iraq", lat: 33.3152, lng: 44.3661, flag: "🇮🇶" },
+  { name: "Santiago", country: "Chile", lat: -33.4489, lng: -70.6693, flag: "🇨🇱" },
+  { name: "Surat", country: "India", lat: 21.1702, lng: 72.8311, flag: "🇮🇳" },
+  { name: "Madrid", country: "Spain", lat: 40.4168, lng: -3.7038, flag: "🇪🇸" },
+  { name: "Suzhou", country: "China", lat: 31.2989, lng: 120.5853, flag: "🇨🇳" },
+  { name: "Pune", country: "India", lat: 18.5204, lng: 73.8567, flag: "🇮🇳" },
+  { name: "Harbin", country: "China", lat: 45.8038, lng: 126.5349, flag: "🇨🇳" },
+  { name: "Houston", country: "United States", lat: 29.7604, lng: -95.3698, flag: "🇺🇸" },
+  { name: "Dallas", country: "United States", lat: 32.7767, lng: -96.7970, flag: "🇺🇸" },
+  { name: "Toronto", country: "Canada", lat: 43.6532, lng: -79.3832, flag: "🇨🇦" },
+  { name: "Dar es Salaam", country: "Tanzania", lat: -6.7924, lng: 39.2083, flag: "🇹🇿" },
+  { name: "Miami", country: "United States", lat: 25.7617, lng: -80.1918, flag: "🇺🇸" },
+  { name: "Belo Horizonte", country: "Brazil", lat: -19.9167, lng: -43.9345, flag: "🇧🇷" },
+  { name: "Singapore", country: "Singapore", lat: 1.3521, lng: 103.8198, flag: "🇸🇬" },
+  { name: "Philadelphia", country: "United States", lat: 39.9526, lng: -75.1652, flag: "🇺🇸" },
+  { name: "Phoenix", country: "United States", lat: 33.4484, lng: -112.0740, flag: "🇺🇸" },
+  { name: "San Antonio", country: "United States", lat: 29.4241, lng: -98.4936, flag: "🇺🇸" },
+  { name: "San Diego", country: "United States", lat: 32.7157, lng: -117.1611, flag: "🇺🇸" },
+  { name: "Johannesburg", country: "South Africa", lat: -26.2041, lng: 28.0473, flag: "🇿🇦" },
+  { name: "Alexandria", country: "Egypt", lat: 31.2001, lng: 29.9187, flag: "🇪🇬" },
+  { name: "Ankara", country: "Turkey", lat: 39.9334, lng: 32.8597, flag: "🇹🇷" },
+  { name: "Berlin", country: "Germany", lat: 52.5200, lng: 13.4050, flag: "🇩🇪" },
+  { name: "Sydney", country: "Australia", lat: -33.8688, lng: 151.2093, flag: "🇦🇺" },
+  { name: "Melbourne", country: "Australia", lat: -37.8136, lng: 144.9631, flag: "🇦🇺" },
+  { name: "Abidjan", country: "Ivory Coast", lat: 5.3600, lng: -4.0083, flag: "🇨🇮" },
+  { name: "Kano", country: "Nigeria", lat: 12.0022, lng: 8.5920, flag: "🇳🇬" },
+  { name: "Brasília", country: "Brazil", lat: -15.8267, lng: -47.9218, flag: "🇧🇷" },
+  { name: "Jaipur", country: "India", lat: 26.9124, lng: 75.7873, flag: "🇮🇳" },
+  { name: "Khartoum", country: "Sudan", lat: 15.5007, lng: 32.5599, flag: "🇸🇩" },
+  { name: "Yokohama", country: "Japan", lat: 35.4437, lng: 139.6380, flag: "🇯🇵" },
+  { name: "Casablanca", country: "Morocco", lat: 33.5731, lng: -7.5898, flag: "🇲🇦" },
+  { name: "Izmir", country: "Turkey", lat: 38.4192, lng: 27.1287, flag: "🇹🇷" },
+  { name: "Tashkent", country: "Uzbekistan", lat: 41.2995, lng: 69.2401, flag: "🇺🇿" },
+  { name: "Fortaleza", country: "Brazil", lat: -3.7172, lng: -38.5433, flag: "🇧🇷" },
+  { name: "Salvador", country: "Brazil", lat: -12.9714, lng: -38.5014, flag: "🇧🇷" },
+  { name: "Rome", country: "Italy", lat: 41.9028, lng: 12.4964, flag: "🇮🇹" },
+  { name: "Kyiv", country: "Ukraine", lat: 50.4501, lng: 30.5234, flag: "🇺🇦" },
+  { name: "Lucknow", country: "India", lat: 26.8467, lng: 80.9462, flag: "🇮🇳" },
+  { name: "Kanpur", country: "India", lat: 26.4499, lng: 80.3319, flag: "🇮🇳" },
+  { name: "Surabaya", country: "Indonesia", lat: -7.2575, lng: 112.7521, flag: "🇮🇩" },
+  { name: "Ilorin", country: "Nigeria", lat: 8.5000, lng: 4.5500, flag: "🇳🇬" },
+  { name: "Faisalabad", country: "Pakistan", lat: 31.4504, lng: 73.1350, flag: "🇵🇰" },
+  { name: "Izmir", country: "Turkey", lat: 38.4237, lng: 27.1428, flag: "🇹🇷" },
+  { name: "Recife", country: "Brazil", lat: -8.0476, lng: -34.8770, flag: "🇧🇷" },
+  { name: "Porto Alegre", country: "Brazil", lat: -30.0346, lng: -51.2177, flag: "🇧🇷" },
+  { name: "Fez", country: "Morocco", lat: 34.0181, lng: -5.0078, flag: "🇲🇦" },
+  { name: "Kumasi", country: "Ghana", lat: 6.6885, lng: -1.6244, flag: "🇬🇭" },
+  { name: "Benin City", country: "Nigeria", lat: 6.3350, lng: 5.6037, flag: "🇳🇬" },
+  { name: "Maiduguri", country: "Nigeria", lat: 11.8311, lng: 13.1511, flag: "🇳🇬" },
+  { name: "Zaria", country: "Nigeria", lat: 11.0804, lng: 7.7076, flag: "🇳🇬" },
+  { name: "Aba", country: "Nigeria", lat: 5.1066, lng: 7.3667, flag: "🇳🇬" },
+  { name: "Jos", country: "Nigeria", lat: 9.9285, lng: 8.8921, flag: "🇳🇬" },
+  { name: "Ilorin", country: "Nigeria", lat: 8.4966, lng: 4.5426, flag: "🇳🇬" },
+  { name: "Oyo", country: "Nigeria", lat: 7.8500, lng: 3.9333, flag: "🇳🇬" },
+  { name: "Enugu", country: "Nigeria", lat: 6.4474, lng: 7.4981, flag: "🇳🇬" },
+  { name: "Abeokuta", country: "Nigeria", lat: 7.1475, lng: 3.3619, flag: "🇳🇬" }
+];
+
+let searchTimeout;
+let selectedIndex = -1;
+
+// OpenRouter API Configuration - loaded from external config.js file
+const OPENROUTER_CONFIG = {
+  apiKey: window.CONFIG?.OPENROUTER_API_KEY || 'YOUR_OPENROUTER_API_KEY',
+  baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+  model: 'anthropic/claude-3.5-sonnet' // Using Claude 3.5 Sonnet for high-quality responses
+};
+
+// OpenRouter API Functions
+async function generateCityOceanWasteInfo(cityName, country, lat, lng) {
+  // Check if API key is configured
+  if (!OPENROUTER_CONFIG.apiKey || OPENROUTER_CONFIG.apiKey === 'YOUR_OPENROUTER_API_KEY') {
+    return {
+      success: false,
+      content: `
+        <div class="ai-info-section">
+          <h4>🤖 AI Ocean Waste Information</h4>
+          <p class="ai-summary">API key required for ${cityName} recommendations</p>
+          <button class="learn-more-btn" onclick="showAIModal('${cityName}', 'Please configure your OpenRouter API key in config.js to get personalized ocean waste recommendations.')">
+            📖 Learn More
+          </button>
+        </div>
+      `
+    };
+  }
+
+  try {
+    const prompt = `You are an expert marine environmental scientist. Provide specific, actionable information about ocean plastic waste and pollution for ${cityName}, ${country} (coordinates: ${lat.toFixed(4)}°, ${lng.toFixed(4)}°).
+
+Please provide:
+1. Local ocean pollution challenges specific to this city/region
+2. 3-4 concrete actions residents can take to help reduce ocean plastic waste
+3. Local organizations or initiatives working on ocean cleanup
+4. Specific environmental impacts on nearby marine ecosystems
+
+Keep the response concise (under 300 words), factual, and actionable. Use bullet points where appropriate. Focus on practical solutions and local context.`;
+
+    const response = await fetch(OPENROUTER_CONFIG.baseUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENROUTER_CONFIG.apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': window.location.origin,
+        'X-Title': 'TrashGenius Ocean Waste Assistant'
+      },
+      body: JSON.stringify({
+        model: OPENROUTER_CONFIG.model,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const aiContent = data.choices?.[0]?.message?.content;
+
+    if (!aiContent) {
+      throw new Error('No content received from API');
+    }
+
+    return {
+      success: true,
+      content: `
+        <div class="ai-info-section">
+          <h4>🤖 AI Ocean Waste Information</h4>
+          <p class="ai-summary">Personalized recommendations available for ${cityName}</p>
+          <button class="learn-more-btn" onclick="showAIModal('${cityName}', \`${aiContent.replace(/`/g, '\\`').replace(/\n/g, '\\n')}\`)">
+            📖 Learn More
+          </button>
+        </div>
+      `,
+      fullContent: aiContent
+    };
+
+  } catch (error) {
+    console.error('OpenRouter API Error:', error);
+    return {
+      success: false,
+      content: `
+        <div class="ai-info-section">
+          <h4>🤖 AI Ocean Waste Information</h4>
+          <p class="ai-summary">Error generating recommendations for ${cityName}</p>
+          <button class="learn-more-btn" onclick="showAIModal('${cityName}', 'Unable to generate AI content. Please check your API key and internet connection.')">
+            📖 Learn More
+          </button>
+        </div>
+      `
+    };
+  }
+}
+
+function initializeCitySearch() {
+  const searchInput = document.getElementById('city-search-input');
+  const searchDropdown = document.getElementById('search-dropdown');
+  
+  // ... (rest of the code remains the same)
+
+  // Input event listener for real-time search
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    selectedIndex = -1;
+    
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+    
+    searchTimeout = setTimeout(() => {
+      if (query.length >= 1) {
+        showSearchResults(query);
+      } else {
+        hideSearchResults();
+      }
+    }, 150);
+  });
+
+  // Keyboard navigation
+  searchInput.addEventListener('keydown', (e) => {
+    const items = searchDropdown.querySelectorAll('.dropdown-item');
+    
+    switch(e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+        updateSelection(items);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, -1);
+        updateSelection(items);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedIndex >= 0 && items[selectedIndex]) {
+          selectCity(items[selectedIndex]);
+        }
+        break;
+      case 'Escape':
+        hideSearchResults();
+        searchInput.blur();
+        break;
+    }
+  });
+
+  // Hide dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+      hideSearchResults();
+    }
+  });
+
+  // Focus event to show recent/popular cities
+  searchInput.addEventListener('focus', () => {
+    if (searchInput.value.trim() === '') {
+      showPopularCities();
+    }
+  });
+}
+
+function showSearchResults(query) {
+  const searchDropdown = document.getElementById('search-dropdown');
+  const results = searchCities(query);
+  
+  if (results.length === 0) {
+    searchDropdown.innerHTML = '<div class="dropdown-no-results">No cities found</div>';
+  } else {
+    searchDropdown.innerHTML = results.map((city, index) => `
+      <div class="dropdown-item" data-index="${index}" data-lat="${city.lat}" data-lng="${city.lng}" data-name="${city.name}">
+        <span class="city-flag">${city.flag}</span>
+        <div class="city-info">
+          <div class="city-name">${highlightMatch(city.name, query)}</div>
+          <div class="city-country">${city.country}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  // Add click listeners to dropdown items
+  searchDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', () => selectCity(item));
+  });
+  
+  searchDropdown.classList.add('show');
+}
+
+function showPopularCities() {
+  const searchDropdown = document.getElementById('search-dropdown');
+  const popularCities = POPULAR_CITIES.slice(0, 8); // Show top 8 popular cities
+  
+  searchDropdown.innerHTML = popularCities.map((city, index) => `
+    <div class="dropdown-item" data-index="${index}" data-lat="${city.lat}" data-lng="${city.lng}" data-name="${city.name}">
+      <span class="city-flag">${city.flag}</span>
+      <div class="city-info">
+        <div class="city-name">${city.name}</div>
+        <div class="city-country">${city.country}</div>
+      </div>
+    </div>
+  `).join('');
+  
+  // Add click listeners to dropdown items
+  searchDropdown.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', () => selectCity(item));
+  });
+  
+  searchDropdown.classList.add('show');
+}
+
+function hideSearchResults() {
+  const searchDropdown = document.getElementById('search-dropdown');
+  searchDropdown.classList.remove('show');
+  selectedIndex = -1;
+}
+
+function searchCities(query) {
+  const lowercaseQuery = query.toLowerCase();
+  return POPULAR_CITIES.filter(city => 
+    city.name.toLowerCase().includes(lowercaseQuery) ||
+    city.country.toLowerCase().includes(lowercaseQuery)
+  ).slice(0, 10); // Limit to 10 results
+}
+
+function highlightMatch(text, query) {
+  if (!query) return text;
+  const regex = new RegExp(`(${query})`, 'gi');
+  return text.replace(regex, '<strong>$1</strong>');
+}
+
+function updateSelection(items) {
+  items.forEach((item, index) => {
+    if (index === selectedIndex) {
+      item.classList.add('highlighted');
+      item.scrollIntoView({ block: 'nearest' });
+    } else {
+      item.classList.remove('highlighted');
+    }
+  });
+}
+
+async function selectCity(item) {
+  const lat = parseFloat(item.dataset.lat);
+  const lng = parseFloat(item.dataset.lng);
+  const name = item.dataset.name;
+  const country = item.querySelector('.city-country').textContent;
+  const flag = item.querySelector('.city-flag').textContent;
+  
+  // Update input value
+  const searchInput = document.getElementById('city-search-input');
+  searchInput.value = name;
+  
+  // Hide dropdown
+  hideSearchResults();
+  
+  // Animate map to city location
+  map.flyTo([lat, lng], 6, {
+    duration: 2,
+    easeLinearity: 0.1
+  });
+  
+  // Update status to show AI is generating content
+  setStatus(`Generating AI ocean waste information for ${name}...`, 'loading');
+  
+  // Generate AI content for the city
+  const aiInfo = await generateCityOceanWasteInfo(name, country, lat, lng);
+  
+  // Create enhanced popup with AI information
+  const popupContent = `
+    <div class="city-popup">
+      <h3>${flag} ${name}</h3>
+      <p><strong>Country:</strong> ${country}</p>
+      <p><strong>Coordinates:</strong> ${lat.toFixed(4)}°, ${lng.toFixed(4)}°</p>
+      <hr style="margin: 12px 0; border: 1px solid rgba(255,255,255,0.2);">
+      ${aiInfo.content}
+    </div>
+  `;
+  
+  // Add a temporary marker for the selected city with AI content
+  const cityMarker = L.marker([lat, lng])
+    .addTo(map)
+    .bindPopup(popupContent, {
+      maxWidth: 400,
+      className: 'ai-enhanced-city-popup'
+    })
+    .openPopup();
+  
+  // Remove the marker after 15 seconds (longer due to AI content)
+  setTimeout(() => {
+    map.removeLayer(cityMarker);
+  }, 15000);
+  
+  // Update status based on AI generation result
+  if (aiInfo.success) {
+    setStatus(`AI ocean waste information generated for ${name}`, 'ok');
+  } else {
+    setStatus(`Viewing ${name} - Configure API key for AI insights`, 'ok');
+  }
+}
+
+// AI Modal Functions
+function showAIModal(cityName, content) {
+  // Create modal if it doesn't exist
+  let modal = document.getElementById('ai-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'ai-modal';
+    modal.className = 'ai-modal';
+    modal.innerHTML = `
+      <div class="ai-modal-content">
+        <div class="ai-modal-header">
+          <h3 id="ai-modal-title">🤖 AI Ocean Waste Information</h3>
+          <button class="ai-modal-close" onclick="closeAIModal()">&times;</button>
+        </div>
+        <div class="ai-modal-body" id="ai-modal-body">
+          <!-- Content will be inserted here -->
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  // Update modal content
+  document.getElementById('ai-modal-title').textContent = `🤖 Ocean Waste Info: ${cityName}`;
+  document.getElementById('ai-modal-body').innerHTML = content.replace(/\n/g, '<br>');
+  
+  // Show modal
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeAIModal() {
+  const modal = document.getElementById('ai-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restore scrolling
+  }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('ai-modal');
+  if (modal && e.target === modal) {
+    closeAIModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeAIModal();
+  }
+});
+
+// Initialize search functionality when DOM is ready
+document.addEventListener('DOMContentLoaded', initializeCitySearch);
+
 loadDataAndRender();
