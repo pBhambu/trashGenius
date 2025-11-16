@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
+    <div class="ocean-bg"></div>
     <header class="hero">
       <div class="hero-background">
         <div class="bubble bubble-1"></div>
@@ -16,9 +17,13 @@
         <div class="bubble bubble-5"></div>
         <div class="bubble bubble-6"></div>
         <div class="gif-fish gif-fish-1"></div>
-        <div class="gif-fish gif-fish-2"></div>
+        <div class="gif-fish gif-fish-2 gif-fish--shrimp"></div>
         <div class="gif-fish gif-fish-3"></div>
-        <div class="gif-fish gif-fish-4"></div>
+        <div class="gif-fish gif-fish-4 gif-fish--shrimp"></div>
+        <div class="gif-fish gif-fish-5"></div>
+        <div class="gif-fish gif-fish-6 gif-fish--shrimp"></div>
+        <div class="gif-fish gif-fish-7"></div>
+        <div class="gif-fish gif-fish-8 gif-fish--shrimp"></div>
       </div>
 
       <div class="hero-inner">
@@ -112,7 +117,7 @@
         const fishNodes = Array.from(document.querySelectorAll('.gif-fish'));
         if (!fishNodes.length) return;
 
-        const maxFish = 4;
+        const maxFish = 8;
         const fishes = fishNodes.slice(0, maxFish).map((el) => ({ el }));
 
         function resetFish(fish) {
@@ -211,7 +216,8 @@
             const angleDeg = (angleRad * 180) / Math.PI;
             const rotation = angleDeg - 180;
             const screenY = fish.y - scrollY;
-            fish.el.style.transform = `translate(${fish.x}px, ${screenY}px) rotate(${rotation}deg)`;
+            const flipY = fish.vx > 0 ? -1 : 1; // flip vertically when moving right
+            fish.el.style.transform = `translate(${fish.x}px, ${screenY}px) rotate(${rotation}deg) scaleY(${flipY})`;
           });
 
           requestAnimationFrame(tick);
