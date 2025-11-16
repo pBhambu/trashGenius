@@ -1,134 +1,55 @@
-/* public/style.css */
-/* ========== GLOBAL ========== */
-
-/* nice wavey gradient background */
-:root {
-  --accent: #9147ff;
-  --card-bg: #ffffff;
-  --card-color: #0b1220;
-  --k1: #e21b3c;
-  --k2: #1368ce;
-  --k3: #d89e00;
-  --k4: #26890c;
-}
-
-html,body { height: 100%; }
-
 body {
-  font-family: 'Inter', Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.03), transparent),
-              linear-gradient(180deg, #001a3a 0%, #003a6b 50%, #0060a1 100%);
-  color: #fff;
-  min-height: 100vh;
-  -webkit-font-smoothing:antialiased;
+    background: #0a0f2d;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
 
-/* subtle animated waves in the back (pure css) */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(600px 200px at 10% 30%, rgba(255,255,255,0.02), transparent),
-    radial-gradient(800px 220px at 90% 70%, rgba(255,255,255,0.02), transparent);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* center content */
-main {
-  max-width: 980px;
-  margin: 24px auto;
-  padding: 28px;
-  position: relative;
-  z-index: 1;
-}
-
-/* top bar */
-.topbar {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-.topbar h1 {
-  margin: 0;
-  font-size: 44px;
-  letter-spacing: -1px;
-  font-weight: 800;
-}
-.top-controls { display:flex; gap:8px; align-items:center; }
-
-/* buttons */
-button {
-  background: var(--accent);
-  border: none;
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 700;
-  transition: transform 160ms ease, box-shadow 160ms ease;
-}
-button:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
-button:active { transform: translateY(0); }
-
-/* screens */
 .screen {
-  background: var(--card-bg);
-  color: var(--card-color);
-  padding: 26px;
-  margin: 16px 0;
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(3,10,20,0.25);
-  animation: popIn .28s ease;
+    display: block;
+    margin-top: 40px;
 }
-@keyframes popIn { from { opacity: 0; transform: translateY(8px) scale(.995) } to { opacity:1; transform: none } }
 
-.hidden { display:none; }
+.hidden {
+    display: none;
+}
 
-/* lobby controls */
-.controls { display:flex; gap: 12px; align-items:center; margin-bottom:8px; }
-.join input { padding: 10px; border-radius: 10px; border: none; margin-right: 6px; font-size: 15px; }
+button {
+    background: #4a5cff;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    margin: 10px;
+}
 
-/* players panel */
-#playersArea { padding: 18px; border-radius: 12px; }
-#playersList div { padding:6px 0; font-weight:700; }
+button:hover {
+    background: #6a7bff;
+}
 
-/* question headings */
-#choices_question, #qo_question, #reveal_question { font-size: 28px; font-weight: 800; margin-bottom: 14px; }
+#choices-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-/* ========== CHOICES (Kahoot-like) ========== */
-.choicesGrid { display:flex; flex-direction:column; gap: 12px; margin-top: 6px; }
-
-/* big answer tiles */
 .choice {
-  padding: 18px;
-  border-radius: 14px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 18px;
-  font-weight: 800;
-  color: #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    background: #1b1f4d;
+    padding: 14px 20px;
+    width: 350px;
+    border-radius: 8px;
+    margin: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-size: 18px;
 }
 
-/* Kahoot classic colors */
-.choice:nth-child(1) { background: var(--k1); }
-.choice:nth-child(2) { background: var(--k2); }
-.choice:nth-child(3) { background: var(--k3); color: #10220a; }
-.choice:nth-child(4) { background: var(--k4); }
+.choice:hover {
+    border-color: #4a9fff;
+}
 
-/* hover + selected */
-.choice:hover { transform: translateY(-4px) scale(1.02); }
 .choice.selected {
   outline: 6px solid rgba(255,255,255,0.88);
   outline-offset: -6px;
@@ -196,5 +117,39 @@ button:active { transform: translateY(0); }
   .choicesGrid { gap: 8px; }
   #choices_question { font-size:22px; }
   .topbar h1 { font-size: 28px; }
+}
+
+/* ========== MAP-PAGE STYLE BUTTON (MATCH EXACT LOOK) ========== */
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.18s ease;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+.back-button .back-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.3;
 }
 

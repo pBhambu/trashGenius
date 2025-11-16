@@ -1,13 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>Ocean Trivia</title>
-  <link rel="stylesheet" href="/style.css">
+    <title>Ocean Trivia</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
     <header class="topbar">
+      <!-- Back button: uses history.back() when possible, otherwise falls back to the landing page.
+           Primary href points to the project root index.html so servers will route correctly. -->
+      <a id="backBtn" class="back-button" href="/index.html" title="Back to landing">
+        <svg class="back-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="m19 12H5"></path>
+        </svg>
+        Back to Home
+      </a>
       <h1>Ocean Trivia</h1>
       <div class="top-controls">
         <button id="scoresBtn" title="Show leaderboard">Scores</button>
@@ -108,5 +116,29 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/script.js"></script>
+  <script>
+(function () {
+  const backBtn = document.getElementById('backBtn');
+  if (!backBtn) return;
+
+  backBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    // Use history if possible
+    if (history.length > 1) {
+      history.back();
+      return;
+    }
+
+    // Dynamically build redirect using the current hostname + port
+    const host = window.location.hostname;   // example: 127.0.0.1
+    const port = "5500";                     // your Live Server port
+    const root = `http://${host}:${port}/index.html`;
+
+    window.location.href = root;
+  });
+})();
+</script>
+
 </body>
 </html>
