@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Ocean Trivia</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <header class="topbar">
+      <h1>Ocean Trivia</h1>
+      <div class="top-controls">
+        <button id="scoresBtn" title="Show leaderboard">Scores</button>
+        <button id="muteBtn" title="Mute / Unmute">🔊</button>
+      </div>
+    </header>
+
+    <section id="lobby">
+      <div class="controls">
+        <button id="createBtn">Create Room</button>
+        <div class="join">
+          <input id="joinCodeInput" placeholder="Enter join code" />
+          <input id="nameInput" placeholder="Your name" />
+          <button id="joinBtn">Join Room</button>
+        </div>
+      </div>
+
+      <p id="roomInfo">Not in a room</p>
+
+      <div id="playersArea" class="hidden">
+        <h3>Players</h3>
+        <div id="playersList"></div>
+        <button id="startBtn">Start Game (Host only)</button>
+      </div>
+    </section>
+
+    <section id="game" class="hidden">
+      <div id="screenContainer">
+
+        <div id="questionOnly" class="screen hidden question-container">
+          <h3 id="qo_question"></h3>
+          <p class="sub">(Preparing choices...)</p>
+        </div>
+
+        <div id="choicesScreen" class="screen hidden question-container">
+          <h3 id="choices_question"></h3>
+
+          <!-- timer + circle -->
+          <div class="timerWrap">
+            <svg id="timerSvg" viewBox="0 0 120 120" width="80" height="80">
+              <circle cx="60" cy="60" r="48" class="timerBg"></circle>
+              <circle cx="60" cy="60" r="48" class="timerProgress"></circle>
+            </svg>
+            <div id="timerTextBig"><span id="timer">--</span>s</div>
+          </div>
+
+          <div id="choicesArea" class="choicesGrid"></div>
+          <p id="timerText" class="smallHint">Time left: <span id="timerPlain">--</span>s</p>
+        </div>
+
+        <div id="revealScreen" class="screen hidden reveal-container">
+          <h3 id="reveal_question"></h3>
+          <p id="reveal_correct"></p>
+          <div id="reveal_fact"></div>
+
+          <div class="reveal-footer">
+            <div>
+              <h4>Scores</h4>
+              <div id="scoreboard"></div>
+            </div>
+            <div id="revealActions">
+              <button id="viewLeaderboardFromReveal">View full leaderboard</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="finalScreen" class="screen hidden">
+          <h2>Game Over</h2>
+          <div id="finalScores"></div>
+          <button id="backToLobby">Back to Lobby</button>
+        </div>
+
+        <!-- Leaderboard overlay screen -->
+        <div id="leaderboardScreen" class="screen modal hidden">
+          <h2>Leaderboard</h2>
+          <div id="leaderboardList"></div>
+          <div class="modalActions">
+            <button id="closeLeaderboard">Close</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div id="chatArea">
+        <h3>Chat</h3>
+        <div id="chat"></div>
+        <input id="chatInput" placeholder="Message">
+        <button id="chatSend">Send</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- audio (place audio files into public/sounds/) -->
+  <audio id="bgMusic" src="/sounds/lobby-loop.mp3" loop></audio>
+  <audio id="tickSfx" src="/sounds/tick.mp3"></audio>
+  <audio id="correctSfx" src="/sounds/correct.mp3"></audio>
+  <audio id="wrongSfx" src="/sounds/wrong.mp3"></audio>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
