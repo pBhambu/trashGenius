@@ -1676,20 +1676,33 @@ const POPULAR_CITIES = [
   { name: "Abeokuta", country: "Nigeria", lat: 7.1475, lng: 3.3619, flag: "🇳🇬" }
 ];
 
-let searchTimeout;
-let selectedIndex = -1;
+// Global variables for city search functionality
+let searchTimeout; // Timeout for debouncing search input
+let selectedIndex = -1; // Currently selected item in dropdown
 
-// OpenRouter API Configuration - loaded from external config.js file
+/**
+ * OpenRouter API Configuration
+ * Loads API key from external config.js file for security
+ * Falls back to placeholder if config file is not loaded
+ */
 const OPENROUTER_CONFIG = {
-  apiKey: window.CONFIG?.OPENROUTER_API_KEY || 'YOUR_OPENROUTER_API_KEY',
-  baseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+  apiKey: window.CONFIG?.OPENROUTER_API_KEY || 'YOUR_OPENROUTER_API_KEY', // API key from config.js
+  baseUrl: 'https://openrouter.ai/api/v1/chat/completions', // OpenRouter API endpoint
   model: 'anthropic/claude-3.5-sonnet' // Using Claude 3.5 Sonnet for high-quality responses
 };
 
-// OpenRouter API Functions
+/**
+ * Generates AI-powered ocean waste information for a specific city
+ * @param {string} cityName - Name of the city
+ * @param {string} country - Country where the city is located
+ * @param {number} lat - Latitude coordinate
+ * @param {number} lng - Longitude coordinate
+ * @returns {Object} Response object with success status and HTML content
+ */
 async function generateCityOceanWasteInfo(cityName, country, lat, lng) {
-  // Check if API key is configured
+  // Check if API key is properly configured
   if (!OPENROUTER_CONFIG.apiKey || OPENROUTER_CONFIG.apiKey === 'YOUR_OPENROUTER_API_KEY') {
+    // Return error message with instructions to configure API key
     return {
       success: false,
       content: `
@@ -1705,6 +1718,7 @@ async function generateCityOceanWasteInfo(cityName, country, lat, lng) {
   }
 
   try {
+    // Define the prompt for the AI model
     const prompt = `You are an expert marine environmental scientist. Provide specific, actionable information about ocean plastic waste and pollution for ${cityName}, ${country} (coordinates: ${lat.toFixed(4)}°, ${lng.toFixed(4)}°).
 
 Please provide:
@@ -1778,54 +1792,58 @@ Keep the response concise (under 300 words), factual, and actionable. Use bullet
   }
 }
 
+/**
+ * Initializes the city search functionality
+ * Sets up event listeners for input, keyboard navigation, and click handling
+ */
 function initializeCitySearch() {
   const searchInput = document.getElementById('city-search-input');
   const searchDropdown = document.getElementById('search-dropdown');
   
-  // ... (rest of the code remains the same)
-
-  // Input event listener for real-time search
+  // Input event listener for real-time search with debouncing
   searchInput.addEventListener('input', (e) => {
     const query = e.target.value.trim();
-    selectedIndex = -1;
+    selectedIndex = -1; // Reset selection when typing
     
+    // Clear existing timeout to prevent multiple rapid searches
     if (searchTimeout) {
       clearTimeout(searchTimeout);
     }
     
+    // Debounce search input to avoid excessive API calls
     searchTimeout = setTimeout(() => {
       if (query.length >= 1) {
         showSearchResults(query);
       } else {
         hideSearchResults();
       }
-    }, 150);
+    }, 150); // 150ms delay for optimal UX
   });
 
-  // Keyboard navigation
+  // Keyboard navigation for accessibility and better UX
   searchInput.addEventListener('keydown', (e) => {
     const items = searchDropdown.querySelectorAll('.dropdown-item');
     
     switch(e.key) {
       case 'ArrowDown':
-        e.preventDefault();
+        e.preventDefault(); // Prevent cursor movement
         selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
         updateSelection(items);
         break;
       case 'ArrowUp':
-        e.preventDefault();
+        e.preventDefault(); // Prevent cursor movement
         selectedIndex = Math.max(selectedIndex - 1, -1);
         updateSelection(items);
         break;
       case 'Enter':
-        e.preventDefault();
+        e.preventDefault(); // Prevent form submission
         if (selectedIndex >= 0 && items[selectedIndex]) {
           selectCity(items[selectedIndex]);
         }
         break;
       case 'Escape':
-        hideSearchResults();
-        searchInput.blur();
+        hideSearchResults(); // Close dropdown
+        searchInput.blur(); // Remove focus
         break;
     }
   });
